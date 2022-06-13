@@ -5,8 +5,17 @@ import Sort from './components/Sort'
 import PizzaBlock from './components/PizzaBlock'
 import pizzas from './assets/pizzas.json'
 
+const API_URL = "https://62a6f83cbedc4ca6d7be4b30.mockapi.io/items"
 
 function App() {
+  fetch(`${API_URL}`)
+    .then((res) => {
+      return res.json()
+    })
+    .then((arr) => {
+      console.log(arr)
+  })
+  
   return (
         <div className="wrapper">
           <Header />
