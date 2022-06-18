@@ -18,9 +18,11 @@ const Home = () => {
   
     React.useEffect(() => {
       setIsLoading(true)
-      fetch(`https://62a6f83cbedc4ca6d7be4b30.mockapi.io/items?${
-        categoryId > 0 ? `category=${categoryId}` : ""
-        }&sortBy=${sortType.sortProperty}&order=desc`)
+      const order = sortType.sortProperty.includes('-') ? 'asc' :'desc'
+      const sortBy = sortType.sortProperty.replace('-', '')
+      const category = categoryId > 0 ? `category=${categoryId}` : ""
+      
+      fetch(`https://62a6f83cbedc4ca6d7be4b30.mockapi.io/items?${category}&sortBy=${sortBy}&order=${order}`)
       .then((res) => res.json())
       .then((arr) => {
         setItems(arr)
