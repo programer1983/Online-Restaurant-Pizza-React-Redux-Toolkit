@@ -7,7 +7,7 @@ import Sceleton from './../components/PizzaBlock/Sceleton'
 // const API_URL = "https://62a6f83cbedc4ca6d7be4b30.mockapi.io/items"
 
 
-const Home = () => {
+const Home = ({searchValue}) => {
     const [items, setItems] = React.useState([])
     const [loading, setIsLoading] = React.useState(true)
     const [categoryId, setCategoryId] = React.useState(0)
@@ -18,7 +18,7 @@ const Home = () => {
   
     React.useEffect(() => {
       setIsLoading(true)
-      const order = sortType.sortProperty.includes('-') ? 'asc' :'desc'
+      const order = sortType.sortProperty.includes('-') ? 'asc' : 'desc'
       const sortBy = sortType.sortProperty.replace('-', '')
       const category = categoryId > 0 ? `category=${categoryId}` : ""
       
@@ -31,6 +31,14 @@ const Home = () => {
       window.scrollTo(0, 0)
     }, [categoryId, sortType])
 
+    const pizzas = items.filter((obj) => {
+      if(obj.title.toLowerCase().includes(searchValue.toLowerCase())){
+        return true
+      }
+      return false
+    }).map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)
+    const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index}/>)
+
     
     return (
     <div className='container'>
@@ -40,10 +48,7 @@ const Home = () => {
         </div>
         <h2 className="content__title">Все пиццы</h2>
         <div className="content__items">
-            {loading 
-                ? [...new Array(6)].map((_, index) => <Sceleton key={index}/>) 
-                : items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />
-            )}
+            {loading ? sceletons : pizzas}
         </div>
     </div>
   )
