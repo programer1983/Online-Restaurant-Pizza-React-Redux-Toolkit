@@ -9,9 +9,8 @@ import {useSelector, useDispatch} from "react-redux"
 import {setCategoryId} from "./../Redux/slices/filterSlice"
 
 const Home = () => {
-    const categoryId = useSelector((state) => state.filter.categoryId)
+    const {categoryId, sort} = useSelector((state) => state.filter)
     const dispatch = useDispatch()
-    const sortType = useSelector((state) => state.filter.sort.sortProperty)
     const {searchValue} = React.useContext(SearchContext)
     const [items, setItems] = React.useState([])
     const [loading, setIsLoading] = React.useState(true)
@@ -24,8 +23,8 @@ const Home = () => {
   
     React.useEffect(() => {
       setIsLoading(true)
-      const order = sortType.includes('-') ? 'asc' : 'desc'
-      const sortBy = sortType.replace('-', '')
+      const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
+      const sortBy = sort.sortProperty.replace('-', '')
       const category = categoryId > 0 ? `category=${categoryId}` : ""
       const search = searchValue ? `&search=${searchValue}` : ""
       
@@ -36,7 +35,7 @@ const Home = () => {
         setIsLoading(false)
       })
       window.scrollTo(0, 0)
-    }, [categoryId, sortType, searchValue, currentPage])
+    }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
     const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)
     const sceletons = [...new Array(6)].map((_, index) => <Sceleton key={index}/>)
