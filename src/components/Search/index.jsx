@@ -1,10 +1,19 @@
 import React from 'react'
+import { useEffect } from 'react'
 import { SearchContext } from '../../App'
 import styles from"./Search.module.scss"
 
 const Search = () => {
   const {searchValue, setSearchValue} = React.useContext(SearchContext)
+  const inputRef = React.useRef()
 
+  console.log(inputRef)
+
+  const onClickClear = () => {
+    setSearchValue('')
+    // document.querySelector('input').focus()
+    inputRef.current.focus()
+  }
 
   return (
     <div className={styles.root}>
@@ -17,6 +26,7 @@ const Search = () => {
         <path class="heroicon-ui" d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/>
       </svg>
         <input
+          ref={inputRef}
           value={searchValue}
           onChange={(event) => setSearchValue(event.target.value)}
           className={styles.input}  
@@ -24,7 +34,7 @@ const Search = () => {
         />
         {searchValue && (
         <svg
-          onClick={() => setSearchValue('')}
+          onClick={onClickClear}
           className={styles.clearIcon}
           height="512px" 
           id="Layer_1" 
