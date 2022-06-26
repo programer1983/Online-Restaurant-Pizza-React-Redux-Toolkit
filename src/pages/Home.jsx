@@ -6,20 +6,23 @@ import Sceleton from './../components/PizzaBlock/Sceleton'
 import Pagination from '../components/Pagination'
 import { SearchContext } from '../App'
 import {useSelector, useDispatch} from "react-redux"
-import {setCategoryId} from "./../Redux/slices/filterSlice"
+import {setCategoryId, setCurrentPage} from "./../Redux/slices/filterSlice"
 import axios from 'axios'
 
 const Home = () => {
-    const {categoryId, sort} = useSelector((state) => state.filter)
+    const {categoryId, sort, currentPage} = useSelector((state) => state.filter)
     const dispatch = useDispatch()
     const {searchValue} = React.useContext(SearchContext)
     const [items, setItems] = React.useState([])
     const [loading, setIsLoading] = React.useState(true)
-    const [currentPage, setCurrentPage] = React.useState(1)
-   
-
+    
+  
     const onChangeCategory = (id) => {
       dispatch(setCategoryId(id))
+    }
+
+    const onChangePage = (number) => {
+      dispatch(setCurrentPage(number))
     }
   
     React.useEffect(() => {
@@ -49,7 +52,7 @@ const Home = () => {
         </div>
         <h2 className="content__title">Все пиццы</h2>
         <div className="content__items">{loading ? sceletons : pizzas}</div>
-        <Pagination onChangePage={(number) => setCurrentPage(number)}/>
+        <Pagination currentPage={currentPage} onChangePage={onChangePage}/>
     </div>
   )
 }
