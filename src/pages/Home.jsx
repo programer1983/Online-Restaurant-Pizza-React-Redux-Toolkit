@@ -1,22 +1,24 @@
 import React from 'react'
 import Categories from './../components/Categories'
-import Sort from './../components/Sort'
+import Sort, { sortList } from './../components/Sort'
 import PizzaBlock from './../components/PizzaBlock'
 import Sceleton from './../components/PizzaBlock/Sceleton'
 import Pagination from '../components/Pagination'
 import { SearchContext } from '../App'
 import {useSelector, useDispatch} from "react-redux"
-import {setCategoryId, setCurrentPage} from "./../Redux/slices/filterSlice"
+import {setCategoryId, setCurrentPage, setFilters} from "./../Redux/slices/filterSlice"
 import axios from 'axios'
+import qs from 'qs'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
     const {categoryId, sort, currentPage} = useSelector((state) => state.filter)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const {searchValue} = React.useContext(SearchContext)
     const [items, setItems] = React.useState([])
     const [loading, setIsLoading] = React.useState(true)
     
-  
     const onChangeCategory = (id) => {
       dispatch(setCategoryId(id))
     }
@@ -24,6 +26,20 @@ const Home = () => {
     const onChangePage = (number) => {
       dispatch(setCurrentPage(number))
     }
+
+    React.useEffect(() => {
+      if(window.location.search){
+        const params = qs.parse(window.location.search.substring(1))
+        const sort = sortList.find(obj => obj.sortProperty === params.sortProperty)
+        dispatch(
+          setFilters({
+            ...params,
+            sort,
+          })
+        )
+      }
+
+    }, [])
   
     React.useEffect(() => {
       setIsLoading(true)
@@ -38,6 +54,16 @@ const Home = () => {
         setIsLoading(false)
       })
       window.scrollTo(0, 0)
+    }, [categoryId, sort.sortProperty, searchValue, currentPage])
+
+    
+    React.useEffect(() => {
+      const queryString = qs.stringify({
+        sortProperty: sort.sortProperty,
+        categoryId,
+        currentPage,
+      })
+      navigate(`?${queryString}`)
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
     const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)
